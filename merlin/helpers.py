@@ -5,27 +5,17 @@ import os
 import sublime
 
 
-def merlin_bin():
-    """
-    Return the path of the ocamlmerlin binary."
-    """
-
-    user_settings = sublime.load_settings("Merlin.sublime-settings")
-    merlin_path = user_settings.get('ocamlmerlin_path')
-    if merlin_path:
-        return merlin_path
-
-    # For Mac OS X, add the path for homebrew
-    if "/usr/local/bin" not in os.environ['PATH'].split(os.pathsep):
-        os.environ['PATH'] += os.pathsep + "/usr/local/bin"
-    opam_process = subprocess.Popen('opam config var bin', stdout=subprocess.PIPE, shell=True)
-    opam_bin_path = opam_process.stdout.read().decode('utf-8').rstrip() + '/ocamlmerlin'
-
-    if os.path.isfile(opam_bin_path) and os.access(opam_bin_path, os.X_OK):
-        return opam_bin_path
+def fmtpos(arg):
+    if arg is None:
+        return "end"
+    elif isinstance(arg, dict):
+        line = arg['line']
+        col = arg['col']
+    elif isinstance(arg, tuple) or isinstance(arg, list):
+        (line, col) = arg
     else:
-        return 'ocamlmerlin'
-
+        raise ValueError("fmtpos takes None, (line,col) or { 'line' : _, 'col' : _ }")
+    return "{0}:{1}".format(line, col)
 
 def is_ocaml(view):
     """

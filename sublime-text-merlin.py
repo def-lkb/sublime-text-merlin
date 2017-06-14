@@ -18,18 +18,14 @@ else:
     from .merlin.helpers import merlin_pos, only_ocaml, clean_whitespace
 
 running_process = None
-
-
 def merlin_process():
     global running_process
     if running_process is None:
         running_process = MerlinProcess()
     return running_process
 
-
 def merlin_view(view):
     return MerlinView(merlin_process(), view)
-
 
 class MerlinLoadPackage(sublime_plugin.WindowCommand):
     """
@@ -165,7 +161,6 @@ class MerlinTypeEnclosing:
 
     def __init__(self, view):
         merlin = merlin_view(view)
-        merlin.sync()
 
         pos = view.sel()
         line, col = view.rowcol(pos[0].begin())
@@ -250,7 +245,6 @@ class MerlinLocateMli(sublime_plugin.WindowCommand):
     def run(self):
         view = self.window.active_view()
         merlin = merlin_view(view)
-        merlin.sync()
 
         pos = view.sel()
         line, col = view.rowcol(pos[0].begin())
@@ -273,7 +267,6 @@ class MerlinLocateNameMli(sublime_plugin.WindowCommand):
     def on_done(self, name):
         view = self.window.active_view()
         merlin = merlin_view(view)
-        merlin.sync()
 
         pos = view.sel()
         line, col = view.rowcol(pos[0].begin())
@@ -352,7 +345,6 @@ class Autocomplete(sublime_plugin.EventListener):
             prefix = ""
 
         merlin = merlin_view(view)
-        merlin.sync()
 
         default_return = ([], sublime.INHIBIT_WORD_COMPLETIONS)
 
@@ -460,7 +452,6 @@ class MerlinBuffer(sublime_plugin.EventListener):
         Sync the buffer with Merlin on each text edit.
         """
 
-        merlin_view(view).sync()
         self.display_in_error_panel(view)
         self.show_errors(view)
 
